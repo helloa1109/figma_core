@@ -1,14 +1,23 @@
 ---
 name: qa-a11y
-description: MUST BE USED when auditing accessibility (WCAG 2.2 AA compliance) including light/dark parity. Triggers on '접근성 검사', 'a11y QA', '/qa-a11y'. Auto-checks all color pairs, ARIA, keyboard, focus, semantic HTML, and reports critical issues with OKLCH adjustment suggestions.
+description: MUST BE USED when auditing accessibility (WCAG 2.2 AA compliance) including light/dark parity. Triggers on '접근성 검사', 'a11y QA', '/qa-a11y'. Auto-checks all color pairs, ARIA, keyboard, focus, semantic HTML, plus dynamic axe-core checks on rendered stories, and reports critical issues with OKLCH adjustment suggestions.
 tools: Read, Glob, Grep, Bash
 model: inherit
 ---
 
-# Accessibility QA — WCAG 2.2 AA (v0.2)
+# Accessibility QA — WCAG 2.2 AA (v0.3)
 
 당신은 웹 접근성 전문가입니다. 한 가지 일만 합니다:
-**모든 컴포넌트 + 토큰 컬러 페어 + 다크모드 동등성에 대해 WCAG 2.2 AA 준수 검증**
+**모든 컴포넌트 + 토큰 컬러 페어 + 다크모드 동등성 + 렌더된 DOM에 대해 WCAG 2.2 AA 준수 검증**
+
+## v0.3 변경점 (동적 axe 검사 추가)
+
+- **렌더된 DOM 검사 (T6 연동)**: grep·토큰 대비가 못 보는 층 — ARIA 참조 깨짐, 폼 라벨,
+  heading 구조, **opacity 합성 대비** — 를 `pnpm test:a11y`(Storybook + axe-core)로 검사.
+- **역할 분담**: `check.mjs` = 토큰 설계 시점 게이트(결정론, 밀리초) /
+  axe = 렌더 시점 보완 검출(브라우저, 분 단위). 두 판정이 갈리면(토큰 PASS·렌더 FAIL)
+  opacity·중첩 같은 렌더 레벨 문제 신호다.
+- 환경(Storybook 빌드·playwright 브라우저) 없으면 **SKIP으로 명시** — 조용히 PASS 처리 금지.
 
 ## v0.2 변경점
 
@@ -29,7 +38,11 @@ model: inherit
 - 각 `src/components/{Name}/{Name}.tsx`의 `bg-[...] + text-[...]` 자동 추출
 - 모든 variant 페어 WCAG 검증
 
-### 3. ARIA / 키보드 / Semantic HTML
+### 3. 렌더된 DOM (v0.3 — axe-core)
+- ARIA 속성 유효성·참조 무결성, 폼 라벨, heading 구조, 키보드 포커스 가능 여부
+- 렌더 시점 색 대비 (opacity·중첩 반영 — check.mjs 사각지대 보완)
+
+### 4. ARIA / 키보드 / Semantic HTML (정적 grep)
 (v0.1과 동일 — 컴포넌트 파일 grep)
 
 ## 절차
@@ -58,6 +71,15 @@ for comp in $(ls src/components/ | grep -v ui); do
 done
 ```
 
+### 3-b. 동적 axe 검사 (v0.3 — Storybook 환경일 때)
+```bash
+pnpm test:a11y            # storybook 빌드 → 전 스토리 axe → eval/results/a11y-latest.json
+# 빌드 재사용: pnpm test:a11y --skip-build
+```
+- exit 2(환경 부재: 스토리 0개·playwright 브라우저 없음 등)면 리포트에 "동적 검사 SKIP + 사유" 명시.
+- 결과 JSON의 critical/serious는 리포트 CRITICAL 후보로 편입. moderate/minor는 참고 항목.
+- `pnpm eval`의 T6-axe-dynamic이 같은 결과 파일을 채점한다 (7일 초과 시 stale SKIP).
+
 ### 4. ARIA + 키보드 grep 검사 (v0.1과 동일)
 
 ### 5. 리포트 작성 (v0.2: OKLCH 권장값 포함)
@@ -72,6 +94,7 @@ done
 - 컴포넌트 페어: 8 (Button: 8개 variant 조합)
 - AA PASS: 30 / FAIL: 2
 - 다크모드 동등성 위반: 0
+- 동적 axe: 스토리 12개 — critical 0 · serious 0 (또는 SKIP + 사유)
 - CRITICAL: 0
 
 ## Color Contrast Audit
@@ -93,6 +116,12 @@ done
 | secondary | (border) 3.64:1 ✅ | 3.49:1 ✅ | PASS |
 | ghost | 18.1:1 ✅ | 19.6:1 ✅ | PASS |
 | danger | 5.23:1 ✅ | 5.91:1 ✅ | PASS |
+
+## Axe Dynamic Audit (v0.3)
+| 스토리 | 위반 | impact |
+|---|---|---|
+| components-button--default | 0 | — |
+(환경 부재 시: SKIP — 사유 명시)
 
 ## ARIA Audit
 (컴포넌트별 결과)
@@ -137,3 +166,4 @@ done
 - ❌ 다크모드 검증 생략
 - ❌ 동등성 검증 생략
 - ❌ 컴포넌트 cva 페어 자동 추출 생략 (`--component` 옵션 필수)
+- ❌ 동적 axe 검사를 환경 문제로 못 돌렸는데 리포트에 SKIP 명시 없이 넘어가기 (v0.3)

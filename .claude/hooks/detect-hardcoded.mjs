@@ -20,7 +20,8 @@ try {
   const filePath = extractPath(toolInput);
 
   if (!isWriteEdit(toolName)) process.exit(0);
-  if (!filePath.includes("src/components/")) process.exit(0);
+  // v0.8: src/screens/(디자인 화면)도 동일 가드 — 새 폴더가 무방비 지대가 되는 것 방지
+  if (!filePath.includes("src/components/") && !filePath.includes("src/screens/")) process.exit(0);
   if (filePath.includes("src/components/ui/")) process.exit(0);
   if (filePath.includes(".stories.")) process.exit(0);
   if (filePath.includes(".test.")) process.exit(0);

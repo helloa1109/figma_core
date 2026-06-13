@@ -51,6 +51,10 @@
           {
             "type": "command",
             "command": "node .claude/hooks/check-a11y-attrs.mjs"
+          },
+          {
+            "type": "command",
+            "command": "node .claude/hooks/check-story-exists.mjs"
           }
         ]
       }
