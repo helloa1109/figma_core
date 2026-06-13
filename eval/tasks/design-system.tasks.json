@@ -1,6 +1,6 @@
 {
-  "version": "0.3",
-  "description": "harness-core 범용 Eval 태스크. 특정 프로젝트가 아닌, 어떤 디자인 시스템 산출물에도 적용되는 검사. v0.2 CRITICAL 5건을 범용 규칙으로 추상화. 대비 검사는 기존 a11y-contrast-checker 엔진을 재사용한다.",
+  "version": "0.4",
+  "description": "harness-core 범용 Eval 태스크. 특정 프로젝트가 아닌, 어떤 디자인 시스템 산출물에도 적용되는 검사. v0.2 CRITICAL 5건을 범용 규칙으로 추상화. 대비 검사는 기존 a11y-contrast-checker 엔진을, 동적 a11y(T6)는 axe-runner 결과를 재사용한다.",
   "tasks": [
     {
       "id": "T1-contrast",
@@ -36,6 +36,13 @@
       "engine": "scan: a11yAttrs",
       "weight": "low",
       "origin": "check-a11y-attrs 훅(경고성) 산출물 검증"
+    },
+    {
+      "id": "T6-axe-dynamic",
+      "title": "렌더된 DOM 접근성 — axe critical/serious 0건",
+      "engine": "axe-runner 결과 채점 (pnpm test:a11y → eval/results/a11y-latest.json)",
+      "weight": "medium",
+      "origin": "v0.7: grep·토큰 대비가 못 보는 층 — ARIA 참조 깨짐, 폼 라벨, heading 구조, opacity 합성 대비"
     }
   ]
 }

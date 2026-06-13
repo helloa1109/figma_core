@@ -14,8 +14,13 @@ function walk(dir, exts) {
   return out;
 }
 
+// v0.8: 컴포넌트와 디자인 화면(src/screens) 공통 스캔 대상
+function componentDirs(root) {
+  return [path.join(root, "src/components"), path.join(root, "src/screens")];
+}
+
 export function noHardcoding(root) {
-  const files = walk(path.join(root, "src/components"), [".tsx", ".ts", ".jsx", ".css"])
+  const files = componentDirs(root).flatMap((d) => walk(d, [".tsx", ".ts", ".jsx", ".css"]))
     .filter((f) => !f.includes(`${path.sep}ui${path.sep}`));
   const violations = [];
   for (const f of files) {
@@ -30,7 +35,7 @@ export function noHardcoding(root) {
 }
 
 export function usesSemanticAlias(root) {
-  const files = walk(path.join(root, "src/components"), [".tsx", ".ts", ".css"])
+  const files = componentDirs(root).flatMap((d) => walk(d, [".tsx", ".ts", ".css"]))
     .filter((f) => !f.includes(`${path.sep}ui${path.sep}`));
   const violations = [];
   const rawScaleRe = /var\(--color-(brand|success|warning|danger|info|accent|primary|secondary|red|blue|green)-(50|100|200|300|400|500|600|700|800|900|950)\)/g;
@@ -57,7 +62,7 @@ export function wireframeGrayscale(root) {
 }
 
 export function a11yAttrs(root) {
-  const files = walk(path.join(root, "src/components"), [".tsx", ".jsx"])
+  const files = componentDirs(root).flatMap((d) => walk(d, [".tsx", ".jsx"]))
     .filter((f) => !f.includes(`${path.sep}ui${path.sep}`));
   const violations = [];
   for (const f of files) {
