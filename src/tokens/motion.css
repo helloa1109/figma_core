@@ -1,0 +1,13 @@
+/* Travelnote — Motion Tokens
+   모션 다이얼 3 (절제). 보딩패스 사물성에 맞춰 흐름은 짧고 단정하게. */
+
+@theme {
+  --duration-fast: 120ms;
+  --duration-base: 200ms;
+  --duration-slow: 320ms;
+
+  --ease-linear: linear;
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+}

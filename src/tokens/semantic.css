@@ -1,0 +1,22 @@
+/* Travelnote — Semantic Tokens (shadow, z-index, focus)
+   PROJECT.md 금지 규칙: "진한 무채색 그림자 금지. 배경 hue 틴트된 부드러운 그림자만".
+   → shadow는 brand hue로 살짝 틴트된 낮은 알파만 정의. */
+
+@theme {
+  /* Shadow — brand hue(22.4) 틴트, 알파 매우 낮게 */
+  --shadow-xs: 0 1px 2px 0 oklch(0.250 0.040 22.4 / 0.04);
+  --shadow-sm: 0 2px 6px -1px oklch(0.250 0.040 22.4 / 0.06);
+  --shadow-md: 0 6px 16px -4px oklch(0.250 0.040 22.4 / 0.08);
+  --shadow-lg: 0 12px 28px -8px oklch(0.250 0.040 22.4 / 0.10);
+  --shadow-xl: 0 24px 48px -16px oklch(0.250 0.040 22.4 / 0.12);
+
+  /* z-index */
+  --z-base: 0;
+  --z-raised: 10;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-overlay: 300;
+  --z-modal: 400;
+  --z-toast: 500;
+  --z-tooltip: 600;
+}

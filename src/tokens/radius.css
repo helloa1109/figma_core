@@ -1,0 +1,12 @@
+/* Travelnote — Radius Tokens
+   PROJECT.md 금지 규칙: "카드 20px / 버튼 999px 외 사용 자제".
+   상한을 카드(lg=20px)·버튼(full=999px)으로 명시한다. */
+
+@theme {
+  --radius-none: 0;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 20px;   /* 카드 표준 — 보딩패스 카드 포함 */
+  --radius-xl: 28px;   /* 모달/바텀시트 상단 */
+  --radius-full: 999px; /* 버튼 표준 */
+}

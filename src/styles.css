@@ -19,4 +19,4 @@ body {
 
 /* /init 실행 후 ds-token-builder 에이전트가 아래 한 줄의 주석을 풀어 토큰을 활성화합니다.
    활성화 = 아래 줄을 정확히  @import "./tokens/index.css";  로 교체. */
-/* @import "./tokens/index.css"; */
+@import "./tokens/index.css";
